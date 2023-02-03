@@ -1,11 +1,14 @@
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
+const route = require('./routes');
 const db = require('./config/db');
+const env = require('dotenv');
 
 const app = express();
 
-require('dotenv').config();
+//config dotenv
+env.config();
 
 //connect to DB
 db.connect();
@@ -19,12 +22,11 @@ app.use(
     }),
 );
 
-app.get('/', (req, res) => {
-    res.send('Hello World!!!!');
-});
+//Route init
+route(app);
 
-const port = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8080;
 
-app.listen(port, () => {
-    console.log(`App listening on port ${port}`);
+app.listen(PORT, () => {
+    console.log(`App listening on port ${PORT}`);
 });
