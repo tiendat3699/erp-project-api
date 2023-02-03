@@ -23,10 +23,8 @@ class AuthController {
             .catch((err) => res.status(404).json({ message: err }));
     }
 
-    login(req, res) {
-        User.findOne({
-            username: req.body.username,
-        })
+    login(req, res, next) {
+        User.findOne({ username: req.body.username })
             .then((user) => {
                 if (!user) {
                     res.status(404).json({ message: 'User Not found.' });
