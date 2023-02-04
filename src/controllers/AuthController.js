@@ -27,20 +27,24 @@ class AuthController {
         User.findOne({ username: req.body.username })
             .then((user) => {
                 if (!user) {
-                    res.status(404).json({ message: 'User Not found.' });
+                    res.json({
+                        accessToken: null,
+                        message: 'Không tìm thấy tài khoản!',
+                    });
                 } else {
                     const passwordMatch = bcrypt.compareSync(req.body.password, user.password);
                     if (passwordMatch) {
                         const token = jwt.sign({ id: user.id }, authConfig.secretkey, {
                             expiresIn: 86400, //24h,
                         });
-                        res.status(200).json({
+                        res.json({
+                            message: 'Login success!',
                             accessToken: token,
                         });
                     } else {
-                        res.status(401).json({
+                        res.json({
                             accessToken: null,
-                            message: 'Incorrect Password!',
+                            message: 'Sai mật khẩu!',
                         });
                     }
                 }
