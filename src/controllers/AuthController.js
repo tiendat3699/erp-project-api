@@ -16,18 +16,17 @@ class AuthController {
         user.save()
             .then((user) =>
                 res.json({
-                    message: 'sign up success',
-                    accessToken: user,
+                    message: 'Đăng ký thành công!',
                 }),
             )
             .catch((err) => res.status(404).json({ message: err }));
     }
 
-    login(req, res, next) {
+    login(req, res) {
         User.findOne({ username: req.body.username })
             .then((user) => {
                 if (!user) {
-                    res.json({
+                    return res.status(404).json({
                         accessToken: null,
                         message: 'Không tìm thấy tài khoản!',
                     });
@@ -37,19 +36,19 @@ class AuthController {
                         const token = jwt.sign({ id: user.id }, authConfig.secretkey, {
                             expiresIn: 86400, //24h,
                         });
-                        res.json({
-                            message: 'Login success!',
+                        return res.json({
+                            message: 'Đăng nhập thành công!',
                             accessToken: token,
                         });
                     } else {
-                        res.json({
+                        return res.status(400).json({
                             accessToken: null,
                             message: 'Sai mật khẩu!',
                         });
                     }
                 }
             })
-            .catch((err) => res.status(500).send({ message: err }));
+            .catch((err) => res.status(500).json({ message: err }));
     }
 }
 
