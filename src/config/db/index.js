@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
 
+//fixnWarning: Mongoose: the strictQuery
+mongoose.set('strictQuery', true);
+
 async function connect() {
     try {
         await mongoose.connect(process.env.DATABASE, {
