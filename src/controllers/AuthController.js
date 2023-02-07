@@ -26,7 +26,7 @@ class AuthController {
         User.findOne({ username: req.body.username })
             .then((user) => {
                 if (!user) {
-                    return res.status(404).json({
+                    res.status(404).json({
                         accessToken: null,
                         message: 'Không tìm thấy tài khoản!',
                     });
@@ -36,12 +36,12 @@ class AuthController {
                         const token = jwt.sign({ id: user.id }, authConfig.secretkey, {
                             expiresIn: 86400, //24h,
                         });
-                        return res.json({
+                        res.json({
                             message: 'Đăng nhập thành công!',
                             accessToken: token,
                         });
                     } else {
-                        return res.status(400).json({
+                        res.status(400).json({
                             accessToken: null,
                             message: 'Sai mật khẩu!',
                         });

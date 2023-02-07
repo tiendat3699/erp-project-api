@@ -4,7 +4,7 @@ const checkExistingUsername = (req, res, next) => {
     User.findOne({ username: req.body.username })
         .then((user) => {
             if (user) {
-                return res.status(400).json({ message: 'Tên tài khoản đã tồn tại' });
+                res.status(400).json({ message: 'Tên tài khoản đã tồn tại' });
             } else {
                 next();
             }
@@ -16,7 +16,7 @@ const checkExistingEmail = (req, res, next) => {
     User.findOne({ email: req.body.email })
         .then((user) => {
             if (user) {
-                return res.status(400).json({ message: 'Email đã tồn tại' });
+                res.status(400).json({ message: 'Email đã tồn tại' });
             } else {
                 next();
             }
