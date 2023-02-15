@@ -26,29 +26,84 @@ class AuthController {
         User.findOne({ username: req.body.username })
             .then((user) => {
                 if (!user) {
-                    res.status(404).json({
-                        accessToken: null,
+                    return res.status(404).json({
                         message: 'Không tìm thấy tài khoản!',
                     });
                 } else {
                     const passwordMatch = bcrypt.compareSync(req.body.password, user.password);
                     if (passwordMatch) {
                         const token = jwt.sign({ id: user.id }, authConfig.secretkey, {
-                            expiresIn: 86400, //24h,
+                            expiresIn: '5m', //5 min,
                         });
-                        res.json({
+
+                        const refreshToken = jwt.sign({ id: user.id }, authConfig.refreshsecretkey, {
+                            expiresIn: '1w', //1 week,
+                        });
+
+                        res.cookie('accessToken', token, {
+                            httpOnly: true,
+                            maxAge: 5 * 60 * 1000, // 5 min
+                        });
+
+                        res.cookie('refreshToken', refreshToken, {
+                            httpOnly: true,
+                            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+                        });
+
+                        return res.send({
                             message: 'Đăng nhập thành công!',
-                            accessToken: token,
                         });
                     } else {
-                        res.status(400).json({
-                            accessToken: null,
+                        return res.status(400).json({
                             message: 'Sai mật khẩu!',
                         });
                     }
                 }
             })
             .catch((err) => res.status(500).json({ message: err }));
+    }
+
+    logout(req, res) {
+        res.clearCookie('accessToken', {
+            httpOnly: true,
+            secure: true,
+        });
+
+        res.clearCookie('refreshToken', {
+            httpOnly: true,
+            secure: true,
+        });
+
+        res.json({
+            message: 'Đăng xuất!',
+        });
+    }
+
+    refreshToken(req, res) {
+        const refreshToken = req.cookies?.refreshToken;
+        jwt.verify(refreshToken, authConfig.refreshsecretkey, (err, payload) => {
+            if (err) {
+                return res.status(401).json(err);
+            } else {
+                const newToken = jwt.sign({ id: payload.id }, authConfig.secretkey, {
+                    expiresIn: '5m', //5 min,
+                });
+
+                const newRefreshToken = jwt.sign({ id: user.id }, authConfig.refreshsecretkey, {
+                    expiresIn: '1w', //1 week,
+                });
+
+                res.cookie('accessToken', newToken, {
+                    httpOnly: true,
+                    maxAge: 1 * 60 * 60 * 1000, // 1 hour
+                });
+
+                res.cookie('refreshToken', newRefreshToken, {
+                    httpOnly: true,
+                    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+                });
+            }
+        });
     }
 }
 
