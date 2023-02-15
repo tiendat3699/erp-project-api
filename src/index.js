@@ -17,7 +17,7 @@ db.connect();
 app.use(morgan('combined'));
 app.use(
     cors({
-        origin: ['http://localhost:3000', 'http://localhost:8080'],
+        origin: [process.env.BASE_URL_FE, process.env.BASE_URL_fa - border],
         credentials: true,
     }),
 );
