@@ -24,6 +24,7 @@ class AuthController {
 
     login(req, res) {
         User.findOne({ username: req.body.username })
+            .lean()
             .then((user) => {
                 if (!user) {
                     return res.status(404).json({
@@ -50,7 +51,11 @@ class AuthController {
                             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
                         });
 
-                        return res.send({
+                        const { password, ...foundUser } = user;
+                        return res.json({
+                            user: foundUser,
+                            accessToken: token,
+                            refreshToken: refreshToken,
                             message: 'Đăng nhập thành công!',
                         });
                     } else {
