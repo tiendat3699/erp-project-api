@@ -12,13 +12,19 @@ authenticatedUser = (req, res, next) => {
                 .then((user) => {
                     if (!user) {
                         return res.status(401).json({
+                            isError: true,
                             message: 'Không tìm thấy tài khoản!',
                         });
                     } else {
                         next();
                     }
                 })
-                .catch((err) => res.status(500).json(err));
+                .catch((err) =>
+                    res.status(500).json({
+                        isError: true,
+                        error: err,
+                    }),
+                );
         }
     });
 };

@@ -25,6 +25,16 @@ const User = new Schema(
             unique: true,
             match: [/^\S+@\S+\.\S+$/, 'Ivalid email address'],
         },
+        avatar_url: {
+            type: String,
+            trim: true,
+            default: 'https://avatars.githubusercontent.com/u/96950844?s=40&v=4',
+        },
+        role: {
+            type: String,
+            trim: true,
+            default: 'guest',
+        },
         password: {
             type: String,
             minLength: 8,

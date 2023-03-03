@@ -16,10 +16,16 @@ class AuthController {
         user.save()
             .then((user) =>
                 res.json({
+                    isError: false,
                     message: 'Đăng ký thành công!',
                 }),
             )
-            .catch((err) => res.status(404).json({ message: err }));
+            .catch((err) =>
+                res.status(404).json({
+                    isError: true,
+                    message: err,
+                }),
+            );
     }
 
     login(req, res) {
@@ -28,16 +34,17 @@ class AuthController {
             .then((user) => {
                 if (!user) {
                     return res.status(404).json({
+                        isError: true,
                         message: 'Không tìm thấy tài khoản!',
                     });
                 } else {
                     const passwordMatch = bcrypt.compareSync(req.body.password, user.password);
                     if (passwordMatch) {
-                        const token = jwt.sign({ id: user.id }, authConfig.secretkey, {
+                        const token = jwt.sign({ id: user._id }, authConfig.secretkey, {
                             expiresIn: '5m', //5 min,
                         });
 
-                        const refreshToken = jwt.sign({ id: user.id }, authConfig.refreshsecretkey, {
+                        const refreshToken = jwt.sign({ id: user._id }, authConfig.refreshsecretkey, {
                             expiresIn: '1w', //1 week,
                         });
 
@@ -53,19 +60,28 @@ class AuthController {
 
                         const { password, ...foundUser } = user;
                         return res.json({
-                            user: foundUser,
-                            accessToken: token,
-                            refreshToken: refreshToken,
+                            isError: false,
                             message: 'Đăng nhập thành công!',
+                            auth: {
+                                accessToken: token,
+                                refreshToken: refreshToken,
+                            },
+                            user: foundUser,
                         });
                     } else {
                         return res.status(400).json({
+                            isError: true,
                             message: 'Sai mật khẩu!',
                         });
                     }
                 }
             })
-            .catch((err) => res.status(500).json({ message: err }));
+            .catch((err) =>
+                res.status(500).json({
+                    isError: true,
+                    error: err,
+                }),
+            );
     }
 
     logout(req, res) {
@@ -80,6 +96,7 @@ class AuthController {
         });
 
         res.json({
+            isError: false,
             message: 'Đăng xuất!',
         });
     }
@@ -88,13 +105,16 @@ class AuthController {
         const refreshToken = req.cookies?.refreshToken;
         jwt.verify(refreshToken, authConfig.refreshsecretkey, (err, payload) => {
             if (err) {
-                return res.status(401).json(err);
+                return res.status(401).json({
+                    isError: true,
+                    error: err,
+                });
             } else {
                 const newToken = jwt.sign({ id: payload.id }, authConfig.secretkey, {
-                    expiresIn: '5m', //5 min,
+                    expiresIn: '10s', //5 min,
                 });
 
-                const newRefreshToken = jwt.sign({ id: user.id }, authConfig.refreshsecretkey, {
+                const newRefreshToken = jwt.sign({ id: payload.id }, authConfig.refreshsecretkey, {
                     expiresIn: '1w', //1 week,
                 });
 
@@ -107,6 +127,40 @@ class AuthController {
                     httpOnly: true,
                     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
                 });
+            }
+        });
+    }
+
+    currentUser(req, res) {
+        const token = req.cookies?.accessToken;
+        jwt.verify(token, authConfig.secretkey, (err, payload) => {
+            if (err) {
+                return res.status(401).json({
+                    isError: true,
+                    error: err,
+                });
+            } else {
+                User.findOne({ id: payload.id })
+                    .lean()
+                    .then((user) => {
+                        if (!user) {
+                            return res.status(401).json({
+                                isError: true,
+                                message: 'Không tìm thấy tài khoản!',
+                            });
+                        } else {
+                            const { password, ...foundUser } = user;
+                            res.json({
+                                user: foundUser,
+                            });
+                        }
+                    })
+                    .catch((err) =>
+                        res.status(500).json({
+                            isError: true,
+                            error: err,
+                        }),
+                    );
             }
         });
     }
