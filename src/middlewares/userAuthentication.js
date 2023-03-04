@@ -2,13 +2,19 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const authConfig = require('../config/auth');
 
-authenticatedUser = (req, res, next) => {
+userAuthentication = (req, res, next) => {
     const token = req.header('x-access-token');
     jwt.verify(token, authConfig.secretkey, (err, payload) => {
         if (err) {
-            return res.status(401).json(err);
+            return res.status(401).json({
+                error_code: 1,
+                isError: true,
+                error: err,
+            });
         } else {
             User.findOne({ _id: payload.id })
+                .lean()
+                .select('-password')
                 .then((user) => {
                     if (!user) {
                         return res.status(401).json({
@@ -16,7 +22,8 @@ authenticatedUser = (req, res, next) => {
                             message: 'Không tìm thấy tài khoản!',
                         });
                     } else {
-                        next();
+                        req.user = user;
+                        return next();
                     }
                 })
                 .catch((err) =>
@@ -29,4 +36,4 @@ authenticatedUser = (req, res, next) => {
     });
 };
 
-module.exports = authenticatedUser;
+module.exports = userAuthentication;
