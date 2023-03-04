@@ -22,9 +22,8 @@ class UsersController {
     }
 
     all(req, res) {
-        User.find({})
+        User.find({}, { password: 0 })
             .lean()
-            .select('-password')
             .then((users) => {
                 return res.json(users);
             })

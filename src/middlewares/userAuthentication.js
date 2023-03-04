@@ -12,9 +12,8 @@ userAuthentication = (req, res, next) => {
                 error: err,
             });
         } else {
-            User.findOne({ _id: payload.id })
+            User.findOne({ _id: payload.id }, { password: 0 })
                 .lean()
-                .select('-password')
                 .then((user) => {
                     if (!user) {
                         return res.status(401).json({
