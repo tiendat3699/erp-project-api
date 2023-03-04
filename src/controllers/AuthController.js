@@ -41,7 +41,7 @@ class AuthController {
                     const passwordMatch = bcrypt.compareSync(req.body.password, user.password);
                     if (passwordMatch) {
                         const token = jwt.sign({ id: user._id }, authConfig.secretkey, {
-                            expiresIn: '5m', //5 min,
+                            expiresIn: '5ms', //5 min,
                         });
 
                         const refreshToken = jwt.sign({ id: user._id }, authConfig.refreshsecretkey, {
@@ -90,7 +90,7 @@ class AuthController {
     }
 
     refreshToken(req, res) {
-        const refreshToken = req.header('x-access-token');
+        const refreshToken = req.body.refreshToken;
         jwt.verify(refreshToken, authConfig.refreshsecretkey, (err, payload) => {
             if (err) {
                 return res.status(401).json({
