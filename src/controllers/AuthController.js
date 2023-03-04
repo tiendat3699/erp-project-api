@@ -41,7 +41,7 @@ class AuthController {
                     const passwordMatch = bcrypt.compareSync(req.body.password, user.password);
                     if (passwordMatch) {
                         const token = jwt.sign({ id: user._id }, authConfig.secretkey, {
-                            expiresIn: '5m', //5 min,
+                            expiresIn: '10s', //5 min,
                         });
 
                         const refreshToken = jwt.sign({ id: user._id }, authConfig.refreshsecretkey, {
@@ -126,6 +126,11 @@ class AuthController {
                 res.cookie('refreshToken', newRefreshToken, {
                     httpOnly: true,
                     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+                });
+
+                return res.json({
+                    isError: false,
+                    message: 'got new tokens!',
                 });
             }
         });
