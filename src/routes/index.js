@@ -1,9 +1,9 @@
 const authRouter = require('./Auth');
-const userRouter = require('./User');
+const usersRouter = require('./Users');
 
 function route(app) {
     app.use('/api/auth', authRouter);
-    app.use('/api/user', userRouter);
+    app.use('/api/users', usersRouter);
 }
 
 module.exports = route;

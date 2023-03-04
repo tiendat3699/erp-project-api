@@ -6,7 +6,6 @@ const authController = require('../controllers/AuthController');
 
 router.post('/signup', verifySignUp.checkExistingEmail, verifySignUp.checkExistingUsername, authController.signup);
 router.post('/login', authController.login);
-router.post('/currentuser', authController.currentUser);
 router.get('/refresh', authController.refreshToken);
 router.delete('/logout', authController.logout);
 

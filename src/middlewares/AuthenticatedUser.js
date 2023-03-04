@@ -3,7 +3,7 @@ const User = require('../models/User');
 const authConfig = require('../config/auth');
 
 authenticatedUser = (req, res, next) => {
-    const token = req.cookies?.accessToken;
+    const token = req.header('x-access-token');
     jwt.verify(token, authConfig.secretkey, (err, payload) => {
         if (err) {
             return res.status(401).json(err);
