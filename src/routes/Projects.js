@@ -4,9 +4,8 @@ const userAuthorization = require('../middlewares/userAuthorization');
 const { ROLES } = require('../models/User');
 const router = express.Router();
 
-const userController = require('../controllers/UserController');
+const projectController = require('../controllers//ProjectController');
 
-router.get('/me', userAuthentication, userController.currentUser);
-router.get('/all', userAuthentication, userAuthorization(ROLES.ADMIN, ROLES.USER), userController.all);
-
+router.get('/all', userAuthentication, projectController.all);
+router.post('/store', userAuthentication, userAuthorization(ROLES.ADMIN), projectController.store);
 module.exports = router;

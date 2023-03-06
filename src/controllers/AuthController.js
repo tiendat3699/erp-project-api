@@ -5,6 +5,7 @@ const User = require('../models/User');
 const authConfig = require('../config/auth');
 
 class AuthController {
+    //[POST] /auth/signup
     signup(req, res) {
         const user = new User({
             fullname: req.body.fullname,
@@ -28,9 +29,9 @@ class AuthController {
             );
     }
 
+    //[POST] /auth/login
     login(req, res) {
         User.findOne({ username: req.body.username })
-            .lean()
             .then((user) => {
                 if (!user) {
                     return res.status(404).json({
@@ -41,7 +42,7 @@ class AuthController {
                     const passwordMatch = bcrypt.compareSync(req.body.password, user.password);
                     if (passwordMatch) {
                         const token = jwt.sign({ id: user._id }, authConfig.secretkey, {
-                            expiresIn: '5ms', //5 min,
+                            expiresIn: '5m', //5 min,
                         });
 
                         const refreshToken = jwt.sign({ id: user._id }, authConfig.refreshsecretkey, {
@@ -72,6 +73,7 @@ class AuthController {
             );
     }
 
+    //[DELETE] /auth/logout
     logout(req, res) {
         res.clearCookie('accessToken', {
             httpOnly: true,
@@ -89,8 +91,9 @@ class AuthController {
         });
     }
 
+    //[GET] /auth/refresh
     refreshToken(req, res) {
-        const refreshToken = req.body.refreshToken;
+        const refreshToken = req.header('x-refresh-token');
         jwt.verify(refreshToken, authConfig.refreshsecretkey, (err, payload) => {
             if (err) {
                 return res.status(401).json({
