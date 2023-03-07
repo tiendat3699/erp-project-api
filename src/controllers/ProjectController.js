@@ -19,7 +19,7 @@ class ProjectController {
         });
 
         project.save().then((project) => {
-            return res.json(project);
+            return res.json({ message: 'Thêm dự án thành công', project });
         });
     }
 }

@@ -10,7 +10,6 @@ userAuthentication = (req, res, next) => {
                 error_code: 1,
                 isError: true,
                 error: err,
-                token: token,
             });
         } else {
             User.findOne({ _id: payload.id }, { password: 0 })
