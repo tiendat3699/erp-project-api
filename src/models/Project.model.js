@@ -7,27 +7,46 @@ const STATUS = {
     CANCEL: 'Cancel',
 };
 
-const Project = new Schema({
-    name: {
-        type: String,
-        require: true,
-        trim: true,
+const Project = new Schema(
+    {
+        name: {
+            type: String,
+            require: true,
+            trim: true,
+        },
+        customerId: {
+            type: Schema.ObjectId,
+            ref: 'Customer',
+            require: true,
+        },
+        description: {
+            type: String,
+            trim: true,
+        },
+        status: {
+            type: String,
+            trim: true,
+            default: STATUS.PROGRESSING,
+        },
+        start_date: {
+            type: Date,
+            default: Date.now,
+        },
+        end_date: {
+            type: Date,
+            default: Date.now,
+        },
+        users: [
+            {
+                type: Schema.ObjectId,
+                ref: 'User',
+            },
+        ],
     },
-    customerId: {
-        type: String,
-        require: true,
-        trim: true,
+    {
+        timestamps: true,
     },
-    status: {
-        type: String,
-        trim: true,
-        require: true,
-        default: STATUS.PROGRESSING,
-    },
-    users: {
-        type: Array,
-        require: true,
-    },
-});
+);
 
 module.exports = mongoose.model('Project', Project);
+module.exports.STATUS = STATUS;

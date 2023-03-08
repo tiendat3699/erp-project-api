@@ -11,12 +11,7 @@ class ProjectController {
     }
     //[POST] /projects/store
     store(req, res) {
-        const project = new Project({
-            name: req.body.name,
-            customerId: req.body.customerId,
-            status: req.body.status,
-            users: req.body.users,
-        });
+        const project = new Project(req.body);
 
         project.save().then((project) => {
             return res.json({ message: 'Thêm dự án thành công', project });
