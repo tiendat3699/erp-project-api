@@ -1,4 +1,4 @@
-const Project = require('../models/Project');
+const Project = require('../models/Project.model');
 
 class ProjectController {
     //[GET] /project/al

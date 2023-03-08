@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const User = require('../models/User.model');
 
 const checkExistingUsername = (req, res, next) => {
     User.findOne({ username: req.body.username })
