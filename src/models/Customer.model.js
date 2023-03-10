@@ -3,6 +3,10 @@ const Schema = mongoose.Schema;
 
 const Customer = new Schema(
     {
+        image_url: {
+            type: String,
+            trim: true,
+        },
         name: {
             type: String,
             require: true,
