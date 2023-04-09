@@ -1,7 +1,7 @@
 const Project = require('../models/Project.model');
 
 class ProjectController {
-    //[GET] /project/al
+    //[GET] /projects/all
     all(req, res) {
         const projects = Project.find()
             .then((projects) => {

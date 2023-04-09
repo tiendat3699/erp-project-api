@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const Customer = new Schema(
     {
-        image_url: {
+        avatar: {
             type: String,
             trim: true,
         },

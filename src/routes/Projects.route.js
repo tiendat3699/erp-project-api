@@ -8,4 +8,5 @@ const projectController = require('../controllers/Project.controller');
 
 router.get('/all', userAuthentication, projectController.all);
 router.post('/store', userAuthentication, userAuthorization(ROLES.ADMIN), projectController.store);
+
 module.exports = router;
