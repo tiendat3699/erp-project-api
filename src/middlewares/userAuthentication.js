@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User.model');
 const authConfig = require('../config/auth');
 
-userAuthentication = (req, res, next) => {
+const userAuthentication = (req, res, next) => {
     const token = req.header('x-access-token');
     jwt.verify(token, authConfig.secretkey, (err, payload) => {
         if (err) {

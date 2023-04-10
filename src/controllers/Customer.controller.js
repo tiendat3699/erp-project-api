@@ -1,4 +1,5 @@
 const Customer = require('../models/Customer.model');
+const File = require('../models/File.model');
 
 class CustomerController {
     //[GET] /customers/all
@@ -12,11 +13,14 @@ class CustomerController {
 
     //[POST] /customers/store
     store(req, res) {
-        const customer = new Customer(req.body);
-
-        customer.save().then((customer) => {
-            return res.json({ message: 'Thêm dự án thành công', customer });
+        File.findOne({ _id: req.body.avatar }).then((item) => {
+            res.contentType(item.file.contentType);
+            res.send(item.file.data);
         });
+        // const customer = new Customer(req.body);
+        // customer.save().then((customer) => {
+        //     return res.json({ message: 'Thêm khách hành thành công', customer });
+        // });
     }
 }
 
