@@ -1,6 +1,6 @@
 const File = require('../models/File.model');
 const path = require('path');
-const url = require('url');
+const { ObjectId } = require('mongodb');
 
 //config multer
 const multer = require('multer');
@@ -34,7 +34,7 @@ const uploadFile = (key) => {
             }
 
             if (req.file == null) {
-                return res.json({ message: 'file is required' });
+                return next();
             } else {
                 const file = new File({
                     name: req.file.filename,
@@ -51,4 +51,17 @@ const uploadFile = (key) => {
     };
 };
 
-module.exports = uploadFile;
+const useDefaultImage = (req, res, next) => {
+    const defaultImageId = '643e639fab501a0e88bc1230';
+    if (req.body?.avatar == 'default') {
+        File.findOne({ _id: ObjectId(defaultImageId) }).then((file) => {
+            req.body.avatar = file._id;
+            req.body.fileUrl = process.env.BASE_URL_BE + '/public/uploads/' + file.name;
+            return next();
+        });
+    } else {
+        return next();
+    }
+};
+
+module.exports = { uploadFile, useDefaultImage };

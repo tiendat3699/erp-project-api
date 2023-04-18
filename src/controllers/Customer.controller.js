@@ -19,7 +19,7 @@ class CustomerController {
         customer
             .save()
             .then((customer) => {
-                const { avatar, ...resData } = customer;
+                const { avatar, ...resData } = customer.toObject();
                 return res.json({
                     message: 'Thêm khách hàng thành công',
                     customer: resData,
