@@ -17,7 +17,7 @@ db.connect();
 app.use(morgan('combined'));
 app.use(
     cors({
-        origin: [process.env.BASE_URL_FE, process.env.BASE_URL_BE],
+        origin: process.env.BASE_URL_FE,
         credentials: true,
     }),
 );
@@ -27,6 +27,9 @@ app.use(
         extended: true,
     }),
 );
+
+//config static dir
+app.use('/public', express.static('public'));
 
 app.use(cookieParser());
 

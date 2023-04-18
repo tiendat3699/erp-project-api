@@ -5,6 +5,7 @@ class CustomerController {
     //[GET] /customers/all
     all(req, res) {
         const customer = Customer.find()
+            .select('-avatar')
             .then((customers) => {
                 return res.json(customers);
             })
@@ -13,15 +14,22 @@ class CustomerController {
 
     //[POST] /customers/store
     store(req, res) {
-        File.findOne({ _id: req.body.avatar }).then((item) => {
-            res.contentType(item.file.contentType);
-            res.send(item.file.data);
-        });
-        // const customer = new Customer(req.body);
-        // customer.save().then((customer) => {
-        //     return res.json({ message: 'Thêm khách hành thành công', customer });
-        // });
+        const customer = new Customer(req.body);
+        customer.avatar_url = req.body.fileUrl;
+        customer
+            .save()
+            .then((customer) => {
+                const { avatar, ...resData } = customer;
+                return res.json({
+                    message: 'Thêm khách hàng thành công',
+                    customer: resData,
+                });
+            })
+            .catch((error) => res.status(500).json({ error: error }));
     }
+
+    //[PUT] /customers/edit
+    edit(req, res) {}
 }
 
 module.exports = new CustomerController();

@@ -1,20 +1,29 @@
 const File = require('../models/File.model');
-var fs = require('fs');
+const path = require('path');
+const url = require('url');
 
 //config multer
 const multer = require('multer');
 
 // SET STORAGE
-var storage = multer.diskStorage({
+const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads');
+        cb(null, 'public/uploads');
     },
     filename: function (req, file, cb) {
-        cb(null, file.fieldname + '-' + Date.now());
+        cb(
+            null,
+            file.fieldname +
+                '-' +
+                path.parse(file.originalname).name +
+                '-' +
+                Date.now() +
+                path.extname(file.originalname),
+        );
     },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage, limits: { fileSize: 3000000 } });
 
 const uploadFile = (key) => {
     return (req, res, next) => {
@@ -27,18 +36,14 @@ const uploadFile = (key) => {
             if (req.file == null) {
                 return res.json({ message: 'file is required' });
             } else {
-                const newFile = fs.readFileSync(req.file.path);
-                const encFile = newFile.toString('base64');
                 const file = new File({
                     name: req.file.filename,
-                    file: {
-                        contentType: req.file.mimetype,
-                        data: Buffer(encFile, 'base64'),
-                    },
+                    contentType: req.file.mimetype,
+                    path: req.file.path,
                 });
-
                 file.save().then((file) => {
                     req.body[key] = file._id;
+                    req.body.fileUrl = process.env.BASE_URL_BE + '/public/uploads/' + file.name;
                     return next();
                 });
             }

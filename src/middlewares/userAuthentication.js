@@ -12,7 +12,8 @@ const userAuthentication = (req, res, next) => {
                 error: err,
             });
         } else {
-            User.findOne({ _id: payload.id }, { password: 0 })
+            User.findOne({ _id: payload.id })
+                .select('-password')
                 .lean()
                 .then((user) => {
                     if (!user) {

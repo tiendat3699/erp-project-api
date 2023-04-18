@@ -12,9 +12,9 @@ class ProjectController {
     //[POST] /projects/store
     store(req, res) {
         const project = new Project(req.body);
-
         project.save().then((project) => {
-            return res.json({ message: 'Thêm dự án thành công', project });
+            const resData = project.toObject();
+            return res.json({ message: 'Thêm dự án thành công', project: resData });
         });
     }
 }

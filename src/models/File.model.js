@@ -4,10 +4,8 @@ const Schema = mongoose.Schema;
 const File = new Schema(
     {
         name: String,
-        file: {
-            data: Buffer,
-            contentType: String,
-        },
+        path: String,
+        contentType: String,
     },
     {
         timestamps: true,

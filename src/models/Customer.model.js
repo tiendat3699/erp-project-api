@@ -4,8 +4,11 @@ const Schema = mongoose.Schema;
 const Customer = new Schema(
     {
         avatar: {
+            type: Schema.Types.ObjectId,
+            ref: 'File',
+        },
+        avatar_url: {
             type: String,
-            trim: true,
         },
         name: {
             type: String,

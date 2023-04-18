@@ -15,7 +15,7 @@ const Project = new Schema(
             trim: true,
         },
         customerId: {
-            type: Schema.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: 'Customer',
             require: true,
         },
@@ -38,7 +38,7 @@ const Project = new Schema(
         },
         users: [
             {
-                type: Schema.ObjectId,
+                type: Schema.Types.ObjectId,
                 ref: 'User',
             },
         ],
