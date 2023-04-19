@@ -1,6 +1,5 @@
 const userAuthorization = (...Roles) => {
     return (req, res, next) => {
-        const token = req.header('x-access-token');
         if (Roles.includes(req.user.role)) {
             return next();
         } else {

@@ -1,21 +1,20 @@
 const Customer = require('../models/Customer.model');
-const File = require('../models/File.model');
 
 class CustomerController {
     //[GET] /customers/all
     all(req, res) {
-        const customer = Customer.find()
+        Customer.find()
+            .lean()
             .select('-avatar')
             .then((customers) => {
                 return res.json(customers);
             })
-            .catch((error) => res.status(500).json({ error: error }));
+            .catch((error) => res.status(500).json({ error }));
     }
 
     //[POST] /customers/store
     store(req, res) {
         const customer = new Customer(req.body);
-        customer.avatar_url = req.body.fileUrl;
         customer
             .save()
             .then((customer) => {
@@ -25,11 +24,23 @@ class CustomerController {
                     customer: resData,
                 });
             })
-            .catch((error) => res.status(500).json({ error: error }));
+            .catch((error) => res.status(500).json({ error }));
     }
 
-    //[PUT] /customers/edit
-    edit(req, res) {}
+    //[PUT] /customers/:id
+    update(req, res) {
+        Customer.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true })
+            .then((updated) => res.json({ message: 'Cập nhật thành công!', updated }))
+            .catch((error) => res.status(500).json({ error }));
+    }
+
+    //[DELETE] /customers/:id
+
+    delete(req, res) {
+        Customer.deleteById(req.params.id)
+            .then((deletedItem) => res.json({ message: 'xóa thành công', deletedItem }))
+            .catch((error) => res.status(500).json({ error }));
+    }
 }
 
 module.exports = new CustomerController();

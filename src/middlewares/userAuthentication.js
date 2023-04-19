@@ -12,7 +12,7 @@ const userAuthentication = (req, res, next) => {
                 error: err,
             });
         } else {
-            User.findOne({ _id: payload.id })
+            User.findById(payload.id)
                 .select('-password')
                 .lean()
                 .then((user) => {

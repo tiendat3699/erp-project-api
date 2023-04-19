@@ -12,4 +12,4 @@ const File = new Schema(
     },
 );
 
-module.exports = new mongoose.model('File', File);
+module.exports = mongoose.model('File', File);

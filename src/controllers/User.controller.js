@@ -12,6 +12,7 @@ class UserController {
     //[GET] /users/all
     all(req, res) {
         User.find({}, { password: 0 })
+            .lean()
             .then((users) => {
                 return res.json(users);
             })

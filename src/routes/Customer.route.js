@@ -16,5 +16,7 @@ router.post(
     useDefaultImage,
     customerController.store,
 );
+router.put('/:id', userAuthentication, userAuthorization(ROLES.ADMIN), uploadFile('avatar'), customerController.update);
+router.delete('/:id', userAuthentication, userAuthorization(ROLES.ADMIN), customerController.delete);
 
 module.exports = router;
