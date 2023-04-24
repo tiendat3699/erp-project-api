@@ -52,14 +52,8 @@ const uploadFile = (key) => {
 
 const useDefaultImage = (req, res, next) => {
     if (!req.body.avatar) {
-        const defaultImageId = '643e639fab501a0e88bc1230';
-        File.findById(defaultImageId)
-            .then((file) => {
-                req.body.avatar = file._id;
-                req.body.avatar_url = process.env.BASE_URL_BE + '/public/uploads/' + file.name;
-                return next();
-            })
-            .catch((error) => res.status(500).json({ error }));
+        req.body.avatar_url = process.env.BASE_URL_BE + '/public/uploads/' + 'avatar-default.png';
+        return next();
     } else {
         return next();
     }
