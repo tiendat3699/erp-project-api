@@ -11,7 +11,7 @@ const Customer = new Schema(
         avatar_url: {
             type: String,
         },
-        name: {
+        fullname: {
             type: String,
             require: true,
             trim: true,

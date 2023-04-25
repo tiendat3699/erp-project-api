@@ -12,6 +12,17 @@ class CustomerController {
             .catch((error) => res.status(500).json({ error }));
     }
 
+    //[GET] /customers/deleted
+    deleted(req, res) {
+        Customer.findDeleted()
+            .lean()
+            .select('-avatar')
+            .then((customers) => {
+                return res.json(customers);
+            })
+            .catch((error) => res.status(500).json({ error }));
+    }
+
     //[POST] /customers/store
     store(req, res) {
         const customer = new Customer(req.body);

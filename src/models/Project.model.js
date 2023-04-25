@@ -14,7 +14,7 @@ const Project = new Schema(
             require: true,
             trim: true,
         },
-        customerId: {
+        customer: {
             type: Schema.Types.ObjectId,
             ref: 'Customer',
             require: true,

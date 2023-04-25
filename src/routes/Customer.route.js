@@ -8,6 +8,7 @@ const router = express.Router();
 const customerController = require('../controllers/Customer.controller');
 
 router.get('/all', userAuthentication, customerController.all);
+router.get('/deleted', userAuthentication, customerController.deleted);
 router.post(
     '/store',
     userAuthentication,
